@@ -1,0 +1,36 @@
+import pool from "./db.js";
+
+export async function initDb() {
+  await pool.query(`
+    CREATE TABLE IF NOT EXISTS users (
+      user_id SERIAL PRIMARY KEY,
+      username VARCHAR(100) NOT NULL UNIQUE,
+      password VARCHAR(255) NOT NULL,
+      role VARCHAR(50) NOT NULL
+    );
+
+    CREATE TABLE IF NOT EXISTS medicines (
+      medicine_id SERIAL PRIMARY KEY,
+      name VARCHAR(150) NOT NULL,
+      category VARCHAR(100) NOT NULL,
+      batch_number VARCHAR(100) NOT NULL,
+      expiry_date DATE NOT NULL,
+      price NUMERIC(10,2) NOT NULL CHECK (price >= 0),
+      quantity INTEGER NOT NULL CHECK (quantity >= 0)
+    );
+
+    CREATE TABLE IF NOT EXISTS suppliers (
+      supplier_id SERIAL PRIMARY KEY,
+      name VARCHAR(150) NOT NULL,
+      contact VARCHAR(100) NOT NULL,
+      address TEXT NOT NULL
+    );
+
+    CREATE TABLE IF NOT EXISTS sales (
+      sale_id SERIAL PRIMARY KEY,
+      customer_name VARCHAR(150) NOT NULL,
+      date DATE NOT NULL,
+      total_amount NUMERIC(10,2) NOT NULL CHECK (total_amount >= 0)
+    );
+  `);
+}
