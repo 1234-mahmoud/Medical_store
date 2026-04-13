@@ -70,9 +70,33 @@ export default function App() {
   }
 
   // ── Permissions ───────────────────────────────────────────────────────────
-  const canManageAll      = currentUser?.role === "Admin";
-  const canManageMedicines =
-    currentUser?.role === "Admin" || currentUser?.role === "Pharmacist";
+  const role               = currentUser?.role;
+  const canManageAll       = role === "Admin";
+  const canManageMedicines = role === "Admin" || role === "Pharmacist";
+
+// ── Visible tabs per role ─────────────────────────────────────────────────
+  // Cashier    → no dashboard
+  // Pharmacist → no users
+  const TAB_PERMISSIONS = {
+    Admin:      ["dashboard", "users", "medicines", "suppliers", "sales"],
+    Pharmacist: ["medicines", "suppliers", "sales"],
+    Cashier:    ["medicines", "sales"],
+  };
+  const visibleTabs = TAB_PERMISSIONS[role] ?? [];
+
+  // ── Default tab (reset when user logs in with restricted role) ────────────
+  useEffect(() => {
+    if (!visibleTabs.includes(activeTab)) {
+      setActiveTab(visibleTabs[0]);
+    }
+  }, [role]);
+
+  // ── Default tab (reset when user logs in with restricted role) ────────────
+  useEffect(() => {
+    if (!visibleTabs.includes(activeTab)) {
+      setActiveTab(visibleTabs[0]);
+    }
+  }, [role]);
 
   // ── Dashboard stats ───────────────────────────────────────────────────────
   const stats = useMemo(() => [
@@ -91,7 +115,7 @@ export default function App() {
       <Header currentUser={currentUser} onLogout={logout} />
 
       <main className="mx-auto max-w-7xl px-4 py-6 sm:px-6">
-        <TabNav activeTab={activeTab} onTabChange={setActiveTab} />
+        <TabNav tabs={visibleTabs} activeTab={activeTab} onTabChange={setActiveTab} />
 
         {error   && <p className="mb-4 rounded-lg bg-red-500/15 p-3 text-red-300">{error}</p>}
         {loading && <p className="mb-4 text-slate-300">Loading…</p>}

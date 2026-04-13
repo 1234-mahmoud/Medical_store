@@ -1,12 +1,11 @@
-const tabs = ["dashboard", "users", "medicines", "suppliers", "sales"];
-
 /**
  * TabNav
  * Props:
- *   activeTab    – currently selected tab string
- *   onTabChange  – callback(tabName)
+ *   tabs        – array of tab name strings to display
+ *   activeTab   – currently selected tab string
+ *   onTabChange – callback(tabName)
  */
-export default function TabNav({ activeTab, onTabChange }) {
+export default function TabNav({ tabs, activeTab, onTabChange }) {
   return (
     <div className="flex flex-wrap gap-2 mb-6">
       {tabs.map((tab) => (
